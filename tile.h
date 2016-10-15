@@ -6,6 +6,8 @@
 #include <iostream>
 #include <vector>
 
+using namespace std;
+
 class Tile{
   char tileName;
   vector<int> edges;
@@ -15,5 +17,6 @@ public:
   void rotate();
   void swap();
   void insert(int edge);
-  void print();
+
+  friend ostream& operator<<(ostream& os, Tile& rhs);
 };

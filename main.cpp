@@ -13,4 +13,6 @@ int main(){
   ifstream input("ola4data.txt");
   //if the file fails to open, call fileCheck
   if(input.fail()) fileCheck(input);
+  //closes input file after use
+  input.close();
 }
