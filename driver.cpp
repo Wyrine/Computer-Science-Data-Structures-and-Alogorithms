@@ -34,75 +34,82 @@ void readFile(ifstream& input){
     tileList.push_back(currentTileRead);
   }
   Tile tileMatrix[MATRIXSIZE][MATRIXSIZE];
-  if(solvePattern(tileList, tileMatrix)) printMatrix(tileMatrix);
+
+  if(solvePattern(tileList, tileMatrix, tileList.size()-1)) printMatrix(tileMatrix);
   else{
     cout << "No solution found.\n";
   }
 }
-
+/*
 //recursive function that returns true if the solution has been found and false
 //if there is no solution.
 bool solvePattern(vector<Tile> tileList, Tile tileMatrix[MATRIXSIZE][MATRIXSIZE], int tileNum, int row, int col){
-  if(tileNum+1 == tileList.size()) return false;
+  tileMatrix[row][col] = tileList[tileNum]; // inserting the element into the matrix
   for(int i = tileNum; i < tileList.size(); i++){
-      tileMatrix[row][col] = tileList[i]; // inserting the element into the matrix
       do{
-        if(row==0){//first row
-          do{
-            //if the edges additively equate to zero
-            if((tileMatrix[row][col].getRight() + tileList[i+1].getLeft()) == 0){
-              if(col+1 < MATRIXSIZE){ //if the current column is not the last element of the row
-                if(solvePattern(tileList, tileMatrix, i+1, row, col+1)) return true;
-              }
-              else{//otherwise call the function at location row 1 column 0
-                if(solvePattern(tileList, tileMatrix, i+1, row+1, 0)) return true;
-              }
-            }
-          }while(tileList[i+1].rotate());
+        if(row == 0){//first row
+          if(firstRow(tileList, tileMatrix, i, row, col)) return true;
         }
-        else if(row == 1){//second row
-          do{
-            //if the edges additively equate to zero
-            if((tileMatrix[row][col].getRight() + tileList[i+1].getLeft()) == 0){
-              if(col+1 < MATRIXSIZE){ //if the current column is not the last element of the row
-                if(solvePattern(tileList, tileMatrix, i+1, row, col+1)) return true;
-              }
-              else{//otherwise call the function at location row 1 column 0
-                if(solvePattern(tileList, tileMatrix, i+1, row+1, 0)) return true;
-              }
-            }
-          }while(tileList[i+1].rotate());
+        else if(row == 1 || row == 2){//second or third rows
+          if(secondOrThirdRow(tileList, tileMatrix, i, row, col)) return true;
         }
-        else{//third row
-          do{
-            //if the edges additively equate to zero
-            if((tileMatrix[row][col].getRight() + tileList[i+1].getLeft()) == 0){
-              if(col+1 < MATRIXSIZE){ //if the current column is not the last element of the row
-                if(solvePattern(tileList, tileMatrix, i+1, row, col+1)) return true;
-              }
-              else{//otherwise call the function at location row 1 column 0
-                if(solvePattern(tileList, tileMatrix, i+1, row+1, 0)) return true;
-              }
-            }
-          }while(tileList[i+1].rotate());
-        }
-
-      }while(tileMatrix[row][col].rotate());
+      }while(tileMatrix[row][col].rotate());//rotate 'A'
   }
   //there is no matching solution
   return false;
 }
 
+bool firstRow(vector<Tile> tileList, Tile tileMatrix[MATRIXSIZE][MATRIXSIZE], int i, int row, int col){
+  //if(i+1 == tileList.size()) return false;
+  cout << "firstRow\n";
+  cout << "Row: "<<row << " Col: "<<col << " i: "<<i << endl;
+  cout << "Matrix: " << tileMatrix[row][col] << endl;
+  cout << "list size " << (int)tileList.size() << endl;
+  cout << "List: " << tileList[i+1] << endl;
+  do{
+    //if the edges additively equate to zero
+    if((tileMatrix[row][col].getRight() + tileList[i+1].getLeft()) == 0){
+      if(col+1 < MATRIXSIZE){ //if the current column is not the last element of the row
+        if(solvePattern(tileList, tileMatrix, i+1, row, col+1)) return true;
+      }
+      else{//otherwise call the function at location row+1 column 0
+        if(solvePattern(tileList, tileMatrix, i+1, row+1, 0)) return true;
+      }
+    }
+  }while(tileList[i+1].rotate()); //rotate 'B'
+  return false;
+}
+
+bool secondOrThirdRow(vector<Tile> tileList, Tile tileMatrix[MATRIXSIZE][MATRIXSIZE], int i, int row, int col){
+  //if(i+1 == tileList.size()) return false;
+  cout << "secondOrThirdRow\n";
+  cout << "Row: "<<row << " Col: "<<col << " i: "<<i << endl;
+  cout << "Matrix: " << tileMatrix[row][col];
+  cout << "list size " << (int)tileList.size() << endl;
+  cout << "List: " << tileList[i+1] << endl;
+  do{
+    //if the edges additively equate to zero
+    if(((tileMatrix[row][col].getRight() + tileList[i+1].getLeft()) == 0) &&
+      ((tileMatrix[row-1][col+1].getBot() + tileList[i+1].getTop()) == 0)){
+      if(col+1 < MATRIXSIZE){ //if the current column is not the last element of the row
+        if(solvePattern(tileList, tileMatrix, i+1, row, col+1)) return true;
+      }
+      else{//otherwise call the function at location row+1 column 0
+        if(solvePattern(tileList, tileMatrix, i+1, row+1, 0)) return true;
+      }
+    }
+  }while(tileList[i+1].rotate());
+  return false;
+}
+*/
 //sets the first element as the last element in the tileList vector and shifts the
 //other elements forward one index
-vector<Tile> rotateTile(vector<Tile> tileList){
-  vector<Tile> temp;
-  for(vector<Tile>::iterator it = tileList.begin(); it != tileList.end(); it++){
-    if(it == tileList.begin()) it++;
-    temp.push_back(*it);
+void rotateTile(vector<Tile> &tileList, int current){
+  Tile temp = tileList[current];
+  for(int i = current; i > 0; i--){
+    tileList[i] = tileList[i-1];
   }
-  temp.push_back(tileList[0]);
-  return temp;
+  tileList[0] = temp;
 }
 
 //void function that iterates through a MATRIXSIZE by MATRIXSIZE matrix of Tile objects and prints them all out
@@ -113,4 +120,89 @@ void printMatrix(Tile tileMatrix[MATRIXSIZE][MATRIXSIZE]){
       cout << tileMatrix[i][j];
     }
   }
+}
+
+//possible solution
+bool solvePattern(vector<Tile> &tileList, Tile tileMatrix[MATRIXSIZE][MATRIXSIZE], int tileNum, int row, int col){
+  for(int i = tileNum; i > 0 ; i--){
+    cout << "Inserting: " << tileList[i] << endl;
+    tileMatrix[row][col] = tileList[i]; // inserting the element into the matrix
+    tileList.pop_back();
+    /*if(i==0){
+      cout << "Nothing found." << endl;
+      tileList.push_back(tileMatrix[row][col]);
+      return false;
+    }*/
+    if(!tileMatrix[row][col].getState()){
+      cout << "Doing the first element: " << tileMatrix[row][col] << endl;
+      do{
+        if(row == 0){//first row
+          if(firstRow(tileList, tileMatrix, i, row, col, true)) return true;
+        }
+        else if(row == 1 || row == 2){//second or third rows
+          if(secondOrThirdRow(tileList, tileMatrix, i, row, col)) return true;
+        }
+      }while(tileMatrix[row][col].rotate());//rotate 'A'
+    }
+    else{
+      if(row == 0){//first row
+        if(firstRow(tileList, tileMatrix, i, row, col, false)) return true;
+      }
+      else if(row == 1 || row == 2){//second or third rows
+        if(secondOrThirdRow(tileList, tileMatrix, i, row, col)) return true;
+      }
+    }
+    tileList.push_back(tileMatrix[row][col]);
+    rotateTile(tileList, i);
+  }
+  //there is no matching solution
+  return false;
+}
+
+bool firstRow(vector<Tile> &tileList, Tile tileMatrix[MATRIXSIZE][MATRIXSIZE], int i, int row, int col, bool firstElement){
+  do{
+    //if the edges additively equate to zero
+    if((tileMatrix[row][col].getRight() + tileList[i-1].getLeft()) == 0){
+      if (firstElement) tileMatrix[row][col].changeState(true);
+      tileList[i-1].changeState(true);
+      if(col+1 < MATRIXSIZE){ //if the current column is not the last element of the row
+        if(solvePattern(tileList, tileMatrix, i-1, row, col+1)) return true;
+        else {
+          if(firstElement) tileMatrix[row][col].changeState(false);
+          tileList[i-1].changeState(false);
+        }
+      }
+      else{//otherwise call the function at location row+1 column 0
+        if(solvePattern(tileList, tileMatrix, i-1, row+1, 0)) return true;
+        else {
+          if(firstElement) tileMatrix[row][col].changeState(false);
+          tileList[i-1].changeState(false);
+        }
+      }
+    }
+  }while(tileList[i-1].rotate()); //rotate 'B'
+  return false;
+}
+
+bool secondOrThirdRow(vector<Tile> &tileList, Tile tileMatrix[MATRIXSIZE][MATRIXSIZE], int i, int row, int col){
+  do{
+    //if the edges additively equate to zero
+    if(((tileMatrix[row][col].getRight() + tileList[i-1].getLeft()) == 0) &&
+      ((tileMatrix[row-1][col+1].getBot() + tileList[i-1].getTop()) == 0)){
+      tileList[i-1].changeState(true);
+      if(col+1 < MATRIXSIZE){ //if the current column is not the last element of the row
+        if(solvePattern(tileList, tileMatrix, i-1, row, col+1)) return true;
+        else {
+          tileList[i-1].changeState(false);
+        }
+      }
+      else{//otherwise call the function at location row+1 column 0
+        if(solvePattern(tileList, tileMatrix, i-1, row+1, 0)) return true;
+        else {
+          tileList[i-1].changeState(false);
+        }
+      }
+    }
+  }while(tileList[i-1].rotate());
+  return false;
 }

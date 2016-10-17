@@ -14,11 +14,14 @@ class Tile{
   char tileName;
   vector<int> edges;
   int rotation;
+  bool fixedState;
   void swap();
 public:
   Tile(){}
   Tile(char name, int right, int bottom, int left, int top);
   bool rotate();
+  void changeState(bool newState) { fixedState = newState;  }
+  bool getState() { return fixedState; }
   void insert(int edge);
   int getTop() { return edges[3]; }
   int getBot() { return edges[1]; }

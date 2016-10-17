@@ -9,6 +9,7 @@ using namespace std;
 Tile::Tile(char name, int right, int bottom, int left, int top){
   tileName = name;
   rotation = 0;
+  fixedState = false;
   edges.push_back(right);
   edges.push_back(bottom);
   edges.push_back(left);
@@ -60,6 +61,6 @@ ostream& operator<<(ostream& os, Tile& rhs){
   for(vector<int>::iterator it = rhs.edges.begin(); it != rhs.edges.end(); it++){
     os << " " << *it;
   }
-  os << endl;
+  //os << endl;
   return os;
 }
