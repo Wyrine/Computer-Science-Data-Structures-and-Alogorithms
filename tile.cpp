@@ -9,7 +9,7 @@ using namespace std;
 Tile::Tile(char name, int right, int bottom, int left, int top){
   tileName = name;
   rotation = 0;
-  fixedState = false;
+  checkState = false;
   edges.push_back(right);
   edges.push_back(bottom);
   edges.push_back(left);
