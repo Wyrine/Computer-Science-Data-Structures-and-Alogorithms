@@ -12,22 +12,21 @@ using namespace std;
 class Tile{
   //private member functions
   char tileName;
-  vector<int> edges;
+  int edges[4];
   int rotation;
-  bool checkState;
   void swap();
 public:
   Tile(){}
   Tile(char name, int right, int bottom, int left, int top);
   bool rotate();
-  void changeState(bool newState) { checkState = newState;  }
-  bool getState() { return checkState; }
-  void insert(int edge);
   int getTop() { return edges[3]; }
   int getBot() { return edges[1]; }
   int getRight() { return edges[0]; }
   int getLeft() { return edges[2]; }
   char getName() { return tileName; }
+  int getRotation() { return rotation;  }
   //friended extraction operator overloading function
   friend ostream& operator<<(ostream& os, Tile& rhs);
+  //assignement operator overloading
+  Tile operator=(Tile& rhs);
 };
